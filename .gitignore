@@ -1,0 +1,60 @@
+# ---------------------------------------------------------------------------
+# General
+# ---------------------------------------------------------------------------
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ---------------------------------------------------------------------------
+# Python / Django
+# ---------------------------------------------------------------------------
+# Virtual environment
+venv/
+resume/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+
+# Django specific
+*.log
+local_settings.py
+db.sqlite3
+staticfiles/
+media/
+
+# Migrations – keep them if you want, but often ignored in generated projects
+# */migrations/
+
+# ---------------------------------------------------------------------------
+# Node / Vite / React
+# ---------------------------------------------------------------------------
+node_modules/
+.dist/
+/build/
+# Vite cache
+.vite/
+# Production build output
+public/build/
+# TypeScript build info
+*.tsbuildinfo
+
+# ---------------------------------------------------------------------------
+# Misc
+# ---------------------------------------------------------------------------
+# Secrets
+*.pem
+*.key
