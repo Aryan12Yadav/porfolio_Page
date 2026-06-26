@@ -16,6 +16,14 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Load environment variables from .env file in project root or settings folder
+env_path_root = BASE_DIR / ".env"
+env_path_settings = Path(__file__).resolve().parent / ".env"
+
+if env_path_root.exists():
+    load_dotenv(env_path_root)
+elif env_path_settings.exists():
+    load_dotenv(env_path_settings)
 
 
 # Quick-start development settings - unsuitable for production
@@ -84,9 +92,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.dummy",
-        "NAME": "dummy",
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
