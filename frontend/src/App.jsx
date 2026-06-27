@@ -12,7 +12,9 @@ import {
   Phone, 
   Database,
   Terminal,
-  Server
+  Server,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 const GithubIcon = ({ size = 20 }) => (
@@ -51,6 +53,23 @@ function App() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'dark';
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'light') {
+      root.classList.add('theme-light');
+    } else {
+      root.classList.remove('theme-light');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
 
   useEffect(() => {
     // Fetch projects from Django Backend
@@ -84,11 +103,21 @@ function App() {
             <li><a href="#projects">Projects</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
+            <li>
+              <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle Theme" style={{ marginLeft: '12px' }}>
+                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
+            </li>
           </ul>
 
-          <button className="hamburger" onClick={toggleSidebar} aria-label="Toggle Menu">
-            <Menu size={24} />
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button className="theme-toggle-btn hamburger" onClick={toggleTheme} aria-label="Toggle Theme" style={{ display: 'inline-flex' }}>
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <button className="hamburger" onClick={toggleSidebar} aria-label="Toggle Menu">
+              <Menu size={24} />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -102,9 +131,14 @@ function App() {
             <Terminal size={20} />
             <span>Menu</span>
           </span>
-          <button className="close-btn" onClick={toggleSidebar} aria-label="Close Menu">
-            <X size={24} />
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle Theme">
+              {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+            <button className="close-btn" onClick={toggleSidebar} aria-label="Close Menu">
+              <X size={24} />
+            </button>
+          </div>
         </div>
         <ul className="sidebar-links">
           <li>
@@ -133,7 +167,7 @@ function App() {
       {/* HERO SECTION */}
       <section id="home" className="hero">
         <div className="hero-pill">
-          <Terminal size={14} /> Full Stack Developer
+          <Terminal size={14} /> Full Stack Python Developer + AI Engineer
         </div>
         <h1 className="hero-title">
           Hi, I am <span>Aryan Yadav</span> <br />
