@@ -15,7 +15,8 @@ import {
   Server,
   Sun,
   Moon,
-  ArrowDown
+  ArrowDown,
+  Cpu
 } from 'lucide-react';
 
 // Modular Components
@@ -36,24 +37,36 @@ const GithubIcon = ({ size = 20 }) => (
 const fallbackProjects = [
   {
     id: 1,
-    title: "E-Commerce Cloud Platform",
-    description: "A secure, scalable e-commerce application built on React, Django, and PostgreSQL featuring a microservices architecture.",
-    demo_url: "https://example.com",
-    repo_url: "https://github.com",
+    title: "Premium Blogging System",
+    description: "A secure, features-rich blogging platform with user authentication, CRUD operations, and content management tools built on React, Django, and PostgreSQL.",
+    tech_stack: "React, Django, Django REST Framework, PostgreSQL, JWT Authentication, AWS S3",
+    implementation_details: "Designed and implemented user registration, secure login session system, and profile management using JWT authentication. Developed robust REST APIs using Django REST Framework for creating, reading, updating, and deleting blog posts. Configured categories, custom tags, likes, comments, and file upload system storing assets in cloud media containers.",
+    challenges_solved: "Optimized database querying for posts, tags, and comment hierarchies using Django's select_related and prefetch_related, reducing page load latency by 45%. Implemented strict permission classes ensuring only authorized authors can modify their posts.",
+    key_learnings: "Mastered token-based authentication and secure session storage on frontend. Gained hands-on experience in API pagination, search filtering, and designing scalable relational schemas for content platforms.",
+    demo_url: "https://github.com/Aryan12Yadav/Premium-Bloggin-System",
+    repo_url: "https://github.com/Aryan12Yadav/Premium-Bloggin-System",
   },
   {
     id: 2,
     title: "AI Medical Copilot",
-    description: "An AI-powered diagnostic helper built using FastAPI, React, and langchain multi-agent architecture.",
-    demo_url: "https://example.com",
-    repo_url: "https://github.com",
+    description: "An intelligent healthcare intelligence platform designed to extract, analyze, and compare medical reports using OCR and Multi-Agent AI architecture.",
+    tech_stack: "FastAPI, React, PostgreSQL, SQLAlchemy, LangChain, OCR, JWT Authentication",
+    implementation_details: "Built a medical report processing workflow: user upload -> Tesseract OCR text extraction -> AI report analysis mapping key health data (Patient info, category, risk indicators). Integrated report-specific interactive AI chat assisting patients in query resolution. Added report comparison tracking health score trends over time.",
+    challenges_solved: "Established a strict medical safety guardrails framework preventing AI from hallucinating unsupported diagnoses or drug prescriptions. Configured optimized SQLAlchemy transaction pools for multi-page document metadata parsing.",
+    key_learnings: "Developed proficiency in LangChain agent systems, PDF OCR text preprocessing, and structuring unstructured medical documentation into compliant database records.",
+    demo_url: "https://github.com/Aryan12Yadav/Multi-Agent-Healthcare-Copilot-f",
+    repo_url: "https://github.com/Aryan12Yadav/Multi-Agent-Healthcare-Copilot-f",
   },
   {
     id: 3,
     title: "MLOps Training Pipeline",
-    description: "An automated pipeline built on AWS, Docker, and GitHub Actions to ingest, validate, and train machine learning models.",
-    demo_url: "https://example.com",
-    repo_url: "https://github.com",
+    description: "A production-grade machine learning pipeline predicting vehicle insurance purchases, containerized with Docker and auto-deployed to AWS EC2 via GitHub Actions.",
+    tech_stack: "Python, FastAPI, MongoDB Atlas, AWS S3, Docker, GitHub Actions, self-hosted runner, EC2",
+    implementation_details: "Engineered modular pipeline stages: data ingestion from MongoDB Atlas, validation against YAML schema, transformation (SMOTEENN handling class imbalance, ColumnTransformer), Random Forest classifier training, model evaluation comparing to S3 registry, and deployment of accepted model to AWS S3. Served inference via FastAPI.",
+    challenges_solved: "Built automated CI/CD workflows executing a build-test runner block on an AWS EC2 t2.medium self-hosted runner. Managed automated container cleanup and hot-swapping exposed ports for zero-downtime rolling model updates.",
+    key_learnings: "Learned end-to-end MLOps pipeline stages, drift validation, container orchestration with Docker, IAM policy configuration, and GitOps self-hosted CI/CD automation.",
+    demo_url: "https://github.com/Aryan12Yadav/full_stack_mlops_project2026",
+    repo_url: "https://github.com/Aryan12Yadav/full_stack_mlops_project2026",
   }
 ];
 
@@ -395,25 +408,154 @@ function App() {
 
       {/* ABOUT & SKILLS SECTION */}
       <section id="about" className="section">
+        <div className="section-header">
+          <span className="section-subtitle">Profile</span>
+          <h2 className="section-title">About Me & Skills</h2>
+        </div>
+
         <div className="about-grid">
-          <div>
-            <span className="section-subtitle">Profile</span>
-            <h2 className="section-title">About Me</h2>
-            <p style={{ marginTop: '20px', fontSize: '16px' }}>
-              I'm a full-stack engineer passionate about crafting scalable server architectures and interactive, pixel-perfect user interfaces. I love automating deployments and working with modern databases.
+          <div className="profile-img-container">
+            <div className="profile-card">
+              <img 
+                src="https://avatars.githubusercontent.com/u/149989949?s=400&u=8fb0cfa0449770888c4a74e11bfaab4ba666457a&v=4" 
+                alt="Aryan Yadav Profile" 
+                className="profile-img"
+              />
+            </div>
+          </div>
+          <div style={{ gridColumn: 'span 2' }}>
+            <p style={{ fontSize: '16px', lineHeight: '1.7', color: 'var(--text)' }}>
+              I am a B.Tech Computer Science (AI) student at UIET Kanpur with a passionate focus on full-stack development, machine learning pipeline deployments, and robust database architectures. I specialize in building end-to-end Python microservices, automating production deployments with MLOps best practices, and crafting highly responsive, premium React interfaces.
+            </p>
+            <p style={{ marginTop: '16px', fontSize: '16px', lineHeight: '1.7', color: 'var(--text)' }}>
+              My background includes working as an AI/ML Subject Matter Expert Intern, where I gained practical industry experience with deep learning structures, neural networks, and automated CI/CD container pipelines. I look forward to collaborating on complex system integrations and full-stack solutions.
             </p>
           </div>
-          <div>
-            <h3 style={{ fontSize: '20px', marginBottom: '16px' }}>My Tech Stack</h3>
-            <div className="skills-list">
-              <span className="skill-tag"><Code size={14} /> React</span>
-              <span className="skill-tag"><Server size={14} /> Django</span>
-              <span className="skill-tag"><Database size={14} /> PostgreSQL</span>
-              <span className="skill-tag"><Terminal size={14} /> Python</span>
-              <span className="skill-tag"><Database size={14} /> MongoDB</span>
-              <span className="skill-tag"><Code size={14} /> JavaScript</span>
-              <span className="skill-tag"><Terminal size={14} /> MLOps</span>
+        </div>
+
+        {/* Categorized Recruiter-Friendly Skills Dashboard */}
+        <div className="skills-dashboard" style={{ marginTop: '48px' }}>
+          <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--text-bright)', marginBottom: '24px', textAlign: 'center' }}>
+            Technical Expertise
+          </h3>
+          <div className="skills-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
+            
+            <div className="skills-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', transition: 'var(--transition)' }}>
+              <h4 style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '15px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Server size={18} /> Backend Development
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>Python & Django / DRF</span>
+                    <span>Expert</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '90%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>FastAPI & Flask</span>
+                    <span>Advanced</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '85%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>PostgreSQL & SQL</span>
+                    <span>Advanced</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '80%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+              </div>
             </div>
+
+            <div className="skills-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', transition: 'var(--transition)' }}>
+              <h4 style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '15px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Cpu size={18} /> Artificial Intelligence
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>PyTorch & TensorFlow</span>
+                    <span>Advanced</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '85%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>scikit-learn & EDA</span>
+                    <span>Advanced</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '85%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>NLP & Computer Vision</span>
+                    <span>Intermediate</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '75%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="skills-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', transition: 'var(--transition)' }}>
+              <h4 style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '15px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Terminal size={18} /> MLOps & DevOps
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>Docker Containers</span>
+                    <span>Advanced</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '85%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>AWS Cloud (EC2/S3)</span>
+                    <span>Advanced</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '80%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>GitHub Actions CI/CD</span>
+                    <span>Advanced</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '85%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="skills-card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px', transition: 'var(--transition)' }}>
+              <h4 style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '15px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Code size={18} /> Frontend & Tools
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>React & JavaScript</span>
+                    <span>Advanced</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '80%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>MongoDB Atlas</span>
+                    <span>Advanced</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '80%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-bright)', marginBottom: '4px' }}>
+                    <span>Git & Version Control</span>
+                    <span>Expert</span>
+                  </div>
+                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}><div style={{ width: '90%', height: '100%', background: 'var(--primary-gradient)', borderRadius: '2px' }}></div></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
