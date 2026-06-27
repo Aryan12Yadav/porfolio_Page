@@ -1,0 +1,264 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Search, LogOut, Check, Trash2, Mail, Calendar, User, Phone, Briefcase } from 'lucide-react';
+import './AdminDashboard.css';
+
+export default function AdminDashboard({ backToPortfolio }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [authHeader, setAuthHeader] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Check if already logged in this session
+  useEffect(() => {
+    const savedAuth = sessionStorage.getItem('adminAuth');
+    if (savedAuth) {
+      setAuthHeader(savedAuth);
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  // Fetch requests when authenticated
+  useEffect(() => {
+    if (isAuthenticated && authHeader) {
+      fetchRequests();
+    }
+  }, [isAuthenticated, authHeader]);
+
+  const fetchRequests = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get('http://127.0.0.1:8000/api/admin/interview-requests/', {
+        headers: { Authorization: authHeader }
+      });
+      setRequests(res.data);
+    } catch (err) {
+      console.error(err);
+      if (err.response && err.response.status === 401) {
+        handleLogout();
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginError('');
+    // Encode username:password to base64 for Basic Auth
+    const token = btoa(`${username}:${password}`);
+    const basicAuth = `Basic ${token}`;
+
+    try {
+      // Test the credentials by making a request
+      await axios.get('http://127.0.0.1:8000/api/admin/interview-requests/', {
+        headers: { Authorization: basicAuth }
+      });
+      // If successful, save token
+      sessionStorage.setItem('adminAuth', basicAuth);
+      setAuthHeader(basicAuth);
+      setIsAuthenticated(true);
+    } catch (err) {
+      console.error(err);
+      setLoginError('Invalid admin username or password. Please try again.');
+    }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('adminAuth');
+    setAuthHeader('');
+    setIsAuthenticated(false);
+    setUsername('');
+    setPassword('');
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to decline and remove this request?")) return;
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/admin/interview-requests/${id}/`, {
+        headers: { Authorization: authHeader }
+      });
+      setRequests(requests.filter(req => req.id !== id));
+    } catch (err) {
+      console.error("Error deleting request:", err);
+      alert("Failed to delete the request. Please try again.");
+    }
+  };
+
+  const generateMailto = (req) => {
+    const formattedDate = new Date(req.requested_date).toLocaleString();
+    const subject = encodeURIComponent(`Interview Schedule Confirmation - Aryan Yadav`);
+    const body = encodeURIComponent(
+      `Hi ${req.recruiter_name},\n\n` +
+      `Thank you for reaching out! I would be glad to connect and discuss potential opportunities.\n\n` +
+      `I have marked the proposed slot on my calendar:\n` +
+      `📅 ${formattedDate}\n\n` +
+      `Please send over a calendar invite or video meeting link at your convenience.\n\n` +
+      `Best regards,\n` +
+      `Aryan Yadav`
+    );
+    return `mailto:${req.email}?subject=${subject}&body=${body}`;
+  };
+
+  const filteredRequests = requests.filter(req => 
+    req.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    req.recruiter_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    req.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (!isAuthenticated) {
+    return (
+      <div className="admin-login-container">
+        <div className="admin-login-card">
+          <h2 className="admin-title">Admin Portal 🔐</h2>
+          <p className="admin-subtitle">Authenticate to view interview scheduling submissions</p>
+
+          <form onSubmit={handleLogin} className="admin-form">
+            {loginError && <div className="admin-error">{loginError}</div>}
+            
+            <div className="form-group">
+              <label htmlFor="admin-user">Username</label>
+              <input 
+                type="text" 
+                id="admin-user" 
+                value={username} 
+                onChange={(e) => setUsername(e.target.value)} 
+                className="form-input" 
+                placeholder="Enter Username"
+                required 
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="admin-pass">Password</label>
+              <input 
+                type="password" 
+                id="admin-pass" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                className="form-input" 
+                placeholder="Enter Password"
+                required 
+              />
+            </div>
+
+            <div className="admin-login-actions">
+              <button type="button" className="btn btn-secondary" onClick={backToPortfolio}>
+                Back to Site
+              </button>
+              <button type="submit" className="btn btn-primary">
+                Login
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="admin-dashboard-container">
+      <header className="admin-dashboard-header">
+        <div>
+          <span className="section-subtitle">Recruitment Logs</span>
+          <h1 className="admin-dashboard-title">Interview Schedules</h1>
+        </div>
+        <div className="admin-header-actions">
+          <button className="btn btn-secondary" onClick={backToPortfolio}>
+            Back to Site
+          </button>
+          <button className="btn btn-primary logout-btn" onClick={handleLogout}>
+            <LogOut size={16} /> Logout
+          </button>
+        </div>
+      </header>
+
+      <div className="admin-stats-bar">
+        <div className="admin-stat-widget">
+          <span className="widget-label">Total Requests</span>
+          <span className="widget-value">{requests.length}</span>
+        </div>
+        <div className="admin-search-wrapper">
+          <Search className="search-icon" size={18} />
+          <input 
+            type="text" 
+            placeholder="Search by name, company, email..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="admin-search-input"
+          />
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="admin-loading">Loading interview schedules...</div>
+      ) : filteredRequests.length === 0 ? (
+        <div className="admin-empty-state">
+          <p>No interview schedules found.</p>
+        </div>
+      ) : (
+        <div className="admin-table-wrapper">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Recruiter Info</th>
+                <th>Company</th>
+                <th>Requested Date & Time</th>
+                <th>Message</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredRequests.map((req) => (
+                <tr key={req.id}>
+                  <td>
+                    <div className="recruiter-meta-block">
+                      <div className="recruiter-name-row">
+                        <User size={14} /> <strong>{req.recruiter_name}</strong>
+                      </div>
+                      <div className="recruiter-sub-row">
+                        <Mail size={12} /> <a href={`mailto:${req.email}`}>{req.email}</a>
+                      </div>
+                      {req.phone && (
+                        <div className="recruiter-sub-row">
+                          <Phone size={12} /> <span>{req.phone}</span>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="company-block">
+                      <Briefcase size={14} /> <span>{req.company}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="date-block">
+                      <Calendar size={14} /> <span>{new Date(req.requested_date).toLocaleString()}</span>
+                    </div>
+                  </td>
+                  <td className="message-cell">
+                    <p className="request-message-text">{req.message || <em style={{ color: 'var(--text-dim)' }}>No message provided</em>}</p>
+                  </td>
+                  <td>
+                    <div className="table-actions">
+                      <a href={generateMailto(req)} className="action-btn approve-btn" title="Approve & Send Email">
+                        <Check size={16} /> Confirm
+                      </a>
+                      <button className="action-btn delete-btn" onClick={() => handleDelete(req.id)} title="Decline Schedule">
+                        <Trash2 size={16} /> Decline
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ExternalLink, Code, ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ExternalLink, Code, ChevronDown, ChevronUp, Star, GitFork, AlertCircle } from 'lucide-react';
 import './ProjectCard.css';
 
 const GithubIcon = ({ size = 20 }) => (
@@ -9,8 +9,49 @@ const GithubIcon = ({ size = 20 }) => (
   </svg>
 );
 
+const getRepoPath = (url) => {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes('github.com')) {
+      const parts = parsed.pathname.split('/').filter(Boolean);
+      if (parts.length >= 2) {
+        return `${parts[0]}/${parts[1]}`;
+      }
+    }
+  } catch (e) {
+    if (url.includes('/') && !url.startsWith('http')) {
+      return url;
+    }
+  }
+  return null;
+};
+
 export default function ProjectCard({ project }) {
   const [expanded, setExpanded] = useState(false);
+  const [githubStats, setGithubStats] = useState(null);
+
+  useEffect(() => {
+    const repoPath = getRepoPath(project.repo_url);
+    if (!repoPath) return;
+
+    fetch(`https://api.github.com/repos/${repoPath}`)
+      .then(res => {
+        if (!res.ok) throw new Error('GitHub API error');
+        return res.json();
+      })
+      .then(data => {
+        setGithubStats({
+          stars: data.stargazers_count,
+          forks: data.forks_count,
+          issues: data.open_issues_count,
+          language: data.language
+        });
+      })
+      .catch(err => {
+        console.warn(`Could not load stats for ${repoPath}:`, err);
+      });
+  }, [project.repo_url]);
 
   // Split tags by comma
   const tags = project.tech_stack 
@@ -30,6 +71,25 @@ export default function ProjectCard({ project }) {
             {tags.map((tag, idx) => (
               <span key={idx} className="project-tech-tag">{tag}</span>
             ))}
+          </div>
+        )}
+
+        {githubStats && (
+          <div className="project-github-stats">
+            <span className="github-stat-badge" title="GitHub Stars">
+              <Star size={14} /> {githubStats.stars} Stars
+            </span>
+            <span className="github-stat-badge" title="Forks">
+              <GitFork size={14} /> {githubStats.forks} Forks
+            </span>
+            <span className="github-stat-badge" title="Open Issues">
+              <AlertCircle size={14} /> {githubStats.issues} Issues
+            </span>
+            {githubStats.language && (
+              <span className="github-stat-badge" title="Primary Language">
+                <Code size={14} /> {githubStats.language}
+              </span>
+            )}
           </div>
         )}
 

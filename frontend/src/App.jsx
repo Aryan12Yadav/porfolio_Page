@@ -16,7 +16,10 @@ import {
   Sun,
   Moon,
   ArrowDown,
-  Cpu
+  Cpu,
+  BookOpen,
+  Award,
+  MessageCircle
 } from 'lucide-react';
 
 // Modular Components
@@ -26,6 +29,7 @@ import GreetingModal from './components/GreetingModal/GreetingModal';
 import AIChatbot from './components/AIChatbot/AIChatbot';
 import ResumePortal from './components/ResumePortal/ResumePortal';
 import ProjectCard from './components/ProjectCard/ProjectCard';
+import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 
 const GithubIcon = ({ size = 20 }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-github">
@@ -84,28 +88,28 @@ const getAIResponse = (userInput, projectsList) => {
   if (query.includes('project') || query.includes('work') || query.includes('🚀')) {
     if (projectsList && projectsList.length > 0) {
       const projTitles = projectsList.map(p => `• **${p.title}**: ${p.description}`).join('\n\n');
-      return `Maine Django aur React par multiple complex projects deploy kiye hain:\n\n${projTitles}\n\nAap details page par inke dynamic tech implementation specifications read kar sakte hain!`;
+      return `I have built and deployed multiple production-grade projects using Django, React, FastAPI, and MLOps pipelines:\n\n${projTitles}\n\nYou can click on "View Engineering Details" in the projects section to see the full technical architecture and challenges solved for each project.`;
     }
-    return "Main multiple full-stack React-Django aur ML pipeline architectures compile kar chuka hu. Detailed summaries check karne ke liye projects section visit karein!";
+    return "I have engineered multiple full-stack React-Django and machine learning pipeline architectures. Please visit the Projects section to explore detailed summaries and repositories.";
   }
 
   if (query.includes('resume') || query.includes('cv') || query.includes('📄')) {
-    return "Aryan ke paas 2 professional resumes structured hain:\n1. **Full Stack Python Developer Resume** (Backend, APIs, SQL focus)\n2. **AI Engineer Resume** (MLOps, Large Models integration)\n\nAap contact section me unhe reach out karke ya direct preview portal se unhe retrieve kar sakte hain.";
+    return "Aryan has two professionally structured resumes available:\n1. **Full Stack Python Developer Resume** (focusing on backend services, APIs, and databases)\n2. **AI Engineer Resume** (focusing on MLOps, deep learning, and cloud infrastructure)\n\nYou can view and download them in the 'Resumes & Certifications' credentials section.";
   }
 
   if (query.includes('location') || query.includes('relo') || query.includes('📍') || query.includes('kaha')) {
-    return "Aryan India se functional hain aur high-growth tech positions ke liye relocate karne ke liye fully open hain.";
+    return "Aryan is based in India and is fully open to relocating for high-growth technical roles.";
   }
 
-  if (query.includes('contact') || query.includes('email') || query.includes('phone') || query.includes('📞')) {
-    return "Aryan ko direct email kiya ja sakta hai at **aryanyadav892408@gmail.com** ya aap local page ke form me custom time slots choose karke schedule query drop kar sakte hain!";
+  if (query.includes('contact') || query.includes('email') || query.includes('phone') || query.includes('📞') || query.includes('whatsapp')) {
+    return "You can contact Aryan directly via email at **aryanyadav892408@gmail.com** or send a message on WhatsApp at **+91 6387050719**. You can also schedule an interview slot using the form in the Contact section.";
   }
 
   if (query.includes('hello') || query.includes('hi') || query.includes('hey')) {
-    return "Hey there! Aap Aryan ke credentials, project structure, ya professional work details ke bare me pooch sakte hain. How can I help you today?";
+    return "Hello! I am here to help you learn about Aryan's technical credentials, project details, or relocation preferences. How can I assist you today?";
   }
 
-  return "Ye feedback interesting hai! Main is query ka precise answer find kar raha hu. Aap dynamic projects section verify kar sakte hain ya contact details click kar sakte hain!";
+  return "That's an interesting query! I'm still training to answer that precisely. In the meantime, feel free to browse the projects section or check out the contact details page!";
 };
 
 
@@ -145,7 +149,7 @@ function App() {
       await axios.post('http://127.0.0.1:8000/api/interview-requests/', formData);
       setFormStatus({
         type: 'success',
-        message: 'Aapki request receive ho gayi hai! Aryan will review and reach back shortly.'
+        message: 'Your interview request has been successfully submitted! Aryan will review and get back to you shortly.'
       });
       setFormData({
         recruiter_name: '',
@@ -188,7 +192,7 @@ function App() {
 
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
-    { sender: 'assistant', text: "Hello Recruiter! Main Aryan ka futuristic AI Assistant hu. Main unke projects explain kar sakta hu, Resumes highlight kar sakta hu, ya contact details provide kar sakta hu. Poochiye!" }
+    { sender: 'assistant', text: "Hello Recruiter! I am Aryan's digital AI Assistant. I can explain his engineering projects, highlight his resumes, or share his contact details. Feel free to ask any questions!" }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [activeResume, setActiveResume] = useState('fullstack');
@@ -280,6 +284,7 @@ function App() {
             <li><a href="#credentials" onClick={(e) => { e.preventDefault(); handleNavClick('portfolio', 'credentials'); }}>Credentials</a></li>
             <li><a href="#collab" onClick={(e) => { e.preventDefault(); handleNavClick('interview-center', 'collab'); }} style={{ color: 'var(--primary)' }}>Interview Collab</a></li>
             <li><a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick('portfolio', 'contact'); }}>Contact</a></li>
+            <li><a href="#admin" onClick={(e) => { e.preventDefault(); handleNavClick('admin', 'admin'); }}>Admin</a></li>
             <li>
               <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Toggle Theme" style={{ marginLeft: '12px' }}>
                 {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -346,6 +351,11 @@ function App() {
           <li>
             <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick('portfolio', 'contact'); }}>
               <Mail size={18} /> Contact
+            </a>
+          </li>
+          <li>
+            <a href="#admin" onClick={(e) => { e.preventDefault(); handleNavClick('admin', 'admin'); }}>
+              <Server size={18} /> Admin Panel
             </a>
           </li>
         </ul>
@@ -568,6 +578,121 @@ function App() {
         </div>
 
         <ResumePortal activeResume={activeResume} setActiveResume={setActiveResume} />
+
+        {/* Coding Profiles & GitHub Metrics Dashboard */}
+        <div className="profiles-dashboard">
+          <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--text-bright)', marginBottom: '24px', textAlign: 'center' }}>
+            Coding Performance & Activity
+          </h3>
+          <div className="profiles-grid">
+            
+            {/* GitHub Card */}
+            <div className="profile-stat-card">
+              <div>
+                <div className="profile-stat-header">
+                  <div className="profile-stat-icon">
+                    <GithubIcon size={24} />
+                  </div>
+                  <h4 className="profile-stat-title">GitHub Contributions</h4>
+                </div>
+                <div className="profile-metrics-row">
+                  <div className="profile-metric-item">
+                    <span className="profile-metric-value">500+</span>
+                    <span className="profile-metric-label">Total Commits</span>
+                  </div>
+                  <div className="profile-stat-divider"></div>
+                  <div className="profile-metric-item">
+                    <span className="profile-metric-value">15+</span>
+                    <span className="profile-metric-label">Repositories</span>
+                  </div>
+                </div>
+                <p className="profile-stat-desc">
+                  Active full-stack and MLOps repository builder. Automated workflow deployments, unit testing validations, and scalable API services.
+                </p>
+              </div>
+              <a 
+                href="https://github.com/Aryan12Yadav" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn btn-secondary"
+                style={{ width: '100%', justifyContent: 'center', fontSize: '13px', gap: '6px' }}
+              >
+                View Profile <ExternalLink size={14} />
+              </a>
+            </div>
+
+            {/* LeetCode Card */}
+            <div className="profile-stat-card">
+              <div>
+                <div className="profile-stat-header">
+                  <div className="profile-stat-icon">
+                    <Code size={24} />
+                  </div>
+                  <h4 className="profile-stat-title">LeetCode Performance</h4>
+                </div>
+                <div className="profile-metrics-row">
+                  <div className="profile-metric-item">
+                    <span className="profile-metric-value">200+</span>
+                    <span className="profile-metric-label">Problems Solved</span>
+                  </div>
+                  <div className="profile-stat-divider"></div>
+                  <div className="profile-metric-item">
+                    <span className="profile-metric-value">Medium</span>
+                    <span className="profile-metric-label">Core Focus</span>
+                  </div>
+                </div>
+                <p className="profile-stat-desc">
+                  Solving core algorithmic problems with optimal time & space complexity, emphasizing Array manipulation, Dynamic Programming, and Graphs.
+                </p>
+              </div>
+              <a 
+                href="https://leetcode.com/u/aryanyadav123/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn btn-secondary"
+                style={{ width: '100%', justifyContent: 'center', fontSize: '13px', gap: '6px' }}
+              >
+                View Profile <ExternalLink size={14} />
+              </a>
+            </div>
+
+            {/* GeeksforGeeks Card */}
+            <div className="profile-stat-card">
+              <div>
+                <div className="profile-stat-header">
+                  <div className="profile-stat-icon">
+                    <Award size={24} />
+                  </div>
+                  <h4 className="profile-stat-title">GeeksforGeeks Practice</h4>
+                </div>
+                <div className="profile-metrics-row">
+                  <div className="profile-metric-item">
+                    <span className="profile-metric-value">330+</span>
+                    <span className="profile-metric-label">Coding Score</span>
+                  </div>
+                  <div className="profile-stat-divider"></div>
+                  <div className="profile-metric-item">
+                    <span className="profile-metric-value">200+</span>
+                    <span className="profile-metric-label">Problems Solved</span>
+                  </div>
+                </div>
+                <p className="profile-stat-desc">
+                  Practicing data structure algorithms, database query optimization, and reviewing fundamental engineering concepts.
+                </p>
+              </div>
+              <a 
+                href="https://www.geeksforgeeks.org/profile/aryanyadagfu2" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn btn-secondary"
+                style={{ width: '100%', justifyContent: 'center', fontSize: '13px', gap: '6px' }}
+              >
+                View Profile <ExternalLink size={14} />
+              </a>
+            </div>
+
+          </div>
+        </div>
       </section>
 
       {/* CONTACT SECTION */}
@@ -605,6 +730,17 @@ function App() {
                 <h4>GitHub</h4>
                 <a href="https://github.com/Aryan12Yadav" target="_blank" rel="noopener noreferrer" style={{ fontSize: '14px', textDecoration: 'underline' }}>
                   github.com/Aryan12Yadav
+                </a>
+              </div>
+            </div>
+            <div className="contact-card">
+              <div className="contact-icon-wrapper">
+                <MessageCircle size={20} />
+              </div>
+              <div>
+                <h4>WhatsApp</h4>
+                <a href="https://wa.me/916387050719" target="_blank" rel="noopener noreferrer" style={{ fontSize: '14px', textDecoration: 'underline' }}>
+                  +91 6387050719
                 </a>
               </div>
             </div>
@@ -705,6 +841,8 @@ function App() {
         </div>
       </section>
         </>
+      ) : currentView === 'admin' ? (
+        <AdminDashboard backToPortfolio={() => { setCurrentView('portfolio'); window.scrollTo(0,0); }} />
       ) : (
         <InterviewCenter backToPortfolio={() => { setCurrentView('portfolio'); window.scrollTo(0,0); }} />
       )}
@@ -715,6 +853,7 @@ function App() {
           <p>&copy; {new Date().getFullYear()} Aryan Yadav. All rights reserved.</p>
           <ul className="footer-links">
             <li><a href="https://github.com/Aryan12Yadav" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+            <li><a href="#admin" onClick={(e) => { e.preventDefault(); handleNavClick('admin', 'admin'); }}>Admin Portal</a></li>
           </ul>
         </div>
       </footer>

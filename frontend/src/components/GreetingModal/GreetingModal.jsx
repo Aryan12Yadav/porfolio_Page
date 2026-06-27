@@ -17,7 +17,7 @@ export default function GreetingModal({ isOpen, onClose, onTalkToAI }) {
         </div>
         <h2 className="greeting-title">Welcome, Recruiter! 🚀</h2>
         <p className="greeting-text">
-          Hey! Main Aryan Yadav ka digital space portal hu. Aap unke projects live browse kar sakte hain, custom interview slot request trigger kar sakte hain, ya right-bottom me present custom AI Copilot widget se immediately query double check kar sakte hain!
+          Hello! I am Aryan Yadav's digital space portal. You can explore his featured projects, trigger custom interview slot scheduling requests, or directly converse with his AI Assistant widget at the bottom right to get answers to your queries instantly!
         </p>
         <div className="greeting-actions">
           <button className="btn btn-secondary" onClick={onClose}>

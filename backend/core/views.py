@@ -17,3 +17,25 @@ class InterviewRequestCreate(generics.CreateAPIView):
     """
     queryset = InterviewRequest.objects.all()
     serializer_class = InterviewRequestSerializer
+
+from rest_framework import permissions
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+
+class InterviewRequestList(generics.ListAPIView):
+    """
+    API View to list all interview requests for authenticated admins.
+    """
+    queryset = InterviewRequest.objects.all().order_by("-created_at")
+    serializer_class = InterviewRequestSerializer
+    permission_classes = [permissions.IsAdminUser]
+    authentication_classes = [BasicAuthentication, SessionAuthentication]
+
+class InterviewRequestDetail(generics.RetrieveDestroyAPIView):
+    """
+    API View to view details or delete an interview request.
+    """
+    queryset = InterviewRequest.objects.all()
+    serializer_class = InterviewRequestSerializer
+    permission_classes = [permissions.IsAdminUser]
+    authentication_classes = [BasicAuthentication, SessionAuthentication]
+
