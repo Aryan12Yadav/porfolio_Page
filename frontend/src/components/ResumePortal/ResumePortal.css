@@ -1,0 +1,203 @@
+/* Resumes & Certifications Styles */
+.credentials-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 48px;
+  align-items: start;
+}
+
+@media (max-width: 968px) {
+  .credentials-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+.resume-portal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.resume-tabs {
+  display: flex;
+  border-bottom: 1.5px solid var(--border);
+  gap: 24px;
+}
+
+.resume-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition);
+}
+
+.resume-tab-btn:hover {
+  color: var(--text-bright);
+}
+
+.resume-tab-btn.active {
+  color: var(--primary);
+}
+
+.resume-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1.5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--primary-gradient);
+}
+
+.resume-preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fade-in-up 0.4s ease;
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.resume-summary {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.resume-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-bright);
+  border-left: 3px solid var(--primary);
+  padding-left: 10px;
+  margin-top: 8px;
+}
+
+.resume-bullet-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.resume-bullet-list li {
+  font-size: 14px;
+  color: var(--text);
+  position: relative;
+  padding-left: 20px;
+}
+
+.resume-bullet-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: bold;
+}
+
+/* PW Certification Card Styling */
+.cert-card {
+  background: linear-gradient(135deg, rgba(var(--primary-rgba), 0.05) 0%, rgba(13, 16, 23, 0.9) 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+.cert-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(var(--primary-rgba), 0.1) 0%, transparent 60%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cert-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-hover);
+  box-shadow: 0 10px 30px rgba(var(--primary-rgba), 0.2);
+}
+
+.cert-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.cert-badge {
+  align-self: flex-start;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cert-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-bright);
+}
+
+.cert-authority {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.cert-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cert-syllabus-summary {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.cert-topics-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cert-topic-tag {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-bright);
+}

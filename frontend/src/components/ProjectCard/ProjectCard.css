@@ -1,0 +1,74 @@
+/* Project Tech Tags */
+.project-tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.project-tech-tag {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: var(--primary);
+  border-radius: 4px;
+}
+
+/* Project Expandable Details */
+.project-details-btn {
+  background: none;
+  border: none;
+  color: var(--text-bright);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  margin-top: 16px;
+  transition: color 0.2s ease;
+}
+
+.project-details-btn:hover {
+  color: var(--primary);
+}
+
+.project-details-pane {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slide-down-details 0.3s ease;
+}
+
+@keyframes slide-down-details {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.project-detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.project-detail-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+}
+
+.project-detail-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}

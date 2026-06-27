@@ -18,6 +18,14 @@ import {
   ArrowDown
 } from 'lucide-react';
 
+// Modular Components
+import Typewriter from './components/Typewriter/Typewriter';
+import InterviewCenter from './components/InterviewCenter/InterviewCenter';
+import GreetingModal from './components/GreetingModal/GreetingModal';
+import AIChatbot from './components/AIChatbot/AIChatbot';
+import ResumePortal from './components/ResumePortal/ResumePortal';
+import ProjectCard from './components/ProjectCard/ProjectCard';
+
 const GithubIcon = ({ size = 20 }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-github">
     <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
@@ -56,42 +64,6 @@ const typingPhrases = [
   "Software Engineer"
 ];
 
-function Typewriter({ phrases, delay = 100, eraseDelay = 1500 }) {
-  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
-  const [currentText, setCurrentText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    const phrase = phrases[currentPhraseIndex];
-    let timer;
-
-    if (isDeleting) {
-      timer = setTimeout(() => {
-        setCurrentText(phrase.substring(0, currentText.length - 1));
-      }, delay / 2);
-    } else {
-      timer = setTimeout(() => {
-        setCurrentText(phrase.substring(0, currentText.length + 1));
-      }, delay + (Math.random() * 40 - 20));
-    }
-
-    if (!isDeleting && currentText === phrase) {
-      timer = setTimeout(() => setIsDeleting(true), eraseDelay);
-    } else if (isDeleting && currentText === '') {
-      setIsDeleting(false);
-      setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
-    }
-
-    return () => clearTimeout(timer);
-  }, [currentText, isDeleting, currentPhraseIndex, phrases, delay, eraseDelay]);
-
-  return (
-    <span>
-      {currentText}
-      <span className="typewriter-cursor">|</span>
-    </span>
-  );
-}
 
 const getAIResponse = (userInput, projectsList) => {
   const query = userInput.toLowerCase();
@@ -123,82 +95,6 @@ const getAIResponse = (userInput, projectsList) => {
   return "Ye feedback interesting hai! Main is query ka precise answer find kar raha hu. Aap dynamic projects section verify kar sakte hain ya contact details click kar sakte hain!";
 };
 
-function InterviewCenter({ backToPortfolio }) {
-  return (
-    <div className="collab-container">
-      <button className="collab-back-btn" onClick={backToPortfolio}>
-        ← Back to Portfolio
-      </button>
-
-      <div className="collab-intro">
-        <h1 className="collab-title">Interview Collaboration Center</h1>
-        <p className="collab-subtitle">
-          Futuristic mockups for real-time collaboration during recruiter interviews and technical evaluation rounds.
-        </p>
-      </div>
-
-      <div className="collab-grid">
-        {/* Card 1: Video Calling */}
-        <div className="collab-card">
-          <div className="collab-card-header">
-            <h3 className="collab-card-title">
-              Video Calling
-            </h3>
-            <span className="collab-mock-badge">Beta Mockup</span>
-          </div>
-          <div className="collab-mock-screen">
-            <div className="mock-webcam-container">
-              <div className="mock-webcam-feed">Recruiter Feed</div>
-              <div className="mock-webcam-feed" style={{ border: '1px solid var(--primary)' }}>Aryan (You)</div>
-            </div>
-          </div>
-          <p className="collab-card-desc">
-            Integrated high-definition WebRTC video calling channel supporting low-latency connection and mute controls.
-          </p>
-        </div>
-
-        {/* Card 2: Live Code Sharing */}
-        <div className="collab-card">
-          <div className="collab-card-header">
-            <h3 className="collab-card-title">
-              Live Coding IDE
-            </h3>
-            <span className="collab-mock-badge">Beta Mockup</span>
-          </div>
-          <div className="collab-mock-screen">
-            <div className="mock-code-editor">
-              1: def train_model(data):<br />
-              2: &nbsp;&nbsp;&nbsp;&nbsp;model = compile_architect()<br />
-              3: &nbsp;&nbsp;&nbsp;&nbsp;model.fit(data)<br />
-              4: &nbsp;&nbsp;&nbsp;&nbsp;print("Model deployed!")
-            </div>
-          </div>
-          <p className="collab-card-desc">
-            Collab editor with syntax highlighting, support for python scripts, and standard debugger outputs.
-          </p>
-        </div>
-
-        {/* Card 3: Whiteboard Drawing */}
-        <div className="collab-card">
-          <div className="collab-card-header">
-            <h3 className="collab-card-title">
-              Collaborative Whiteboard
-            </h3>
-            <span className="collab-mock-badge">Beta Mockup</span>
-          </div>
-          <div className="collab-mock-screen">
-            <div className="mock-whiteboard">
-              [ Whiteboard Workspace Canvas ]
-            </div>
-          </div>
-          <p className="collab-card-desc">
-            Real-time drawing canvas to explain machine learning topologies, database schemas, and architectural layouts.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -491,38 +387,7 @@ function App() {
         ) : (
           <div className="projects-grid">
             {projects.map((project) => (
-              <article className="project-card" key={project.id}>
-                <div className="project-image-placeholder">
-                  <Code size={48} strokeWidth={1} />
-                </div>
-                <div className="project-content">
-                  <h3 className="project-card-title">{project.title}</h3>
-                  <p className="project-card-description">{project.description}</p>
-                  
-                  <div className="project-links">
-                    {project.repo_url && (
-                      <a 
-                        href={project.repo_url} 
-                        className="project-link-btn" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                      >
-                        <GithubIcon size={16} /> Code
-                      </a>
-                    )}
-                    {project.demo_url && (
-                      <a 
-                        href={project.demo_url} 
-                        className="project-link-btn" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                      >
-                        <ExternalLink size={16} /> Demo
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </article>
+              <ProjectCard key={project.id} project={project} />
             ))}
           </div>
         )}
@@ -560,125 +425,7 @@ function App() {
           <h2 className="section-title">Resumes & Certifications</h2>
         </div>
 
-        <div className="credentials-grid">
-          <div className="resume-portal-card">
-            <div className="resume-tabs">
-              <button 
-                className={`resume-tab-btn ${activeResume === 'fullstack' ? 'active' : ''}`}
-                onClick={() => setActiveResume('fullstack')}
-              >
-                Full Stack Resume
-              </button>
-              <button 
-                className={`resume-tab-btn ${activeResume === 'ai' ? 'active' : ''}`}
-                onClick={() => setActiveResume('ai')}
-              >
-                AI Engineer Resume
-              </button>
-            </div>
-
-            {activeResume === 'fullstack' ? (
-              <div className="resume-preview-content">
-                <p className="resume-summary">
-                  Highly motivated full-stack developer focused on implementing robust Django APIs, high-performance database indexing in PostgreSQL, and clean component architecture in React.
-                </p>
-                
-                <h4 className="resume-section-title">Core Competencies</h4>
-                <div className="skills-list" style={{ marginTop: '8px' }}>
-                  <span className="skill-tag" style={{ padding: '6px 12px', fontSize: '12px' }}>Django & DRF</span>
-                  <span className="skill-tag" style={{ padding: '6px 12px', fontSize: '12px' }}>React.js</span>
-                  <span className="skill-tag" style={{ padding: '6px 12px', fontSize: '12px' }}>PostgreSQL</span>
-                  <span className="skill-tag" style={{ padding: '6px 12px', fontSize: '12px' }}>REST APIs</span>
-                </div>
-
-                <h4 className="resume-section-title">Key Projects</h4>
-                <ul className="resume-bullet-list">
-                  <li>Designed transactional schemas and normalized PostgreSQL project models.</li>
-                  <li>Built responsive dark/light developer templates with CSS custom properties.</li>
-                  <li>Connected recruiter query forms with async DRF storage handlers.</li>
-                </ul>
-
-                <a 
-                  href="#" 
-                  className="btn btn-primary" 
-                  style={{ marginTop: '16px', alignSelf: 'flex-start' }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert('Full Stack Resume PDF download started!');
-                  }}
-                >
-                  Download Full Stack Resume <ArrowDown size={16} />
-                </a>
-              </div>
-            ) : (
-              <div className="resume-preview-content">
-                <p className="resume-summary">
-                  Data Science specialist and MLOps engineer with experience building validation training loops, containerized ML pipelines, and integrating reasoning models into production websites.
-                </p>
-                
-                <h4 className="resume-section-title">Core Competencies</h4>
-                <div className="skills-list" style={{ marginTop: '8px' }}>
-                  <span className="skill-tag" style={{ padding: '6px 12px', fontSize: '12px' }}>MLOps</span>
-                  <span className="skill-tag" style={{ padding: '6px 12px', fontSize: '12px' }}>Python Science</span>
-                  <span className="skill-tag" style={{ padding: '6px 12px', fontSize: '12px' }}>Docker & AWS</span>
-                  <span className="skill-tag" style={{ padding: '6px 12px', fontSize: '12px' }}>LLM Orchestration</span>
-                </div>
-
-                <h4 className="resume-section-title">Key Projects</h4>
-                <ul className="resume-bullet-list">
-                  <li>Engineered automated data collection pipelines with validation checkers.</li>
-                  <li>Deployed custom rule-based conversational agents responding dynamically.</li>
-                  <li>Constructed Dockerized local training scripts on AWS instances.</li>
-                </ul>
-
-                <a 
-                  href="#" 
-                  className="btn btn-primary" 
-                  style={{ marginTop: '16px', alignSelf: 'flex-start' }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert('AI Engineer Resume PDF download started!');
-                  }}
-                >
-                  Download AI Engineer Resume <ArrowDown size={16} />
-                </a>
-              </div>
-            )}
-          </div>
-
-          <div className="cert-card">
-            <div className="cert-header">
-              <span className="cert-badge">Verified Credentials</span>
-              <h3 className="cert-title">Full Stack Data Science Pro</h3>
-              <span className="cert-authority">Physics Wallah (PW)</span>
-            </div>
-            
-            <div className="cert-body">
-              <p className="cert-syllabus-summary">
-                Comprehensive training covering advanced python scripting, exploratory data analysis, machine learning algorithms, deep learning deployments, cloud pipeline automation (MLOps), and relational database indexing.
-              </p>
-              
-              <h4 style={{ fontSize: '14px', color: 'var(--text-bright)', fontWeight: '700' }}>Key Syllabus Competencies</h4>
-              <div className="cert-topics-list">
-                <span className="cert-topic-tag">EDA & Modeling</span>
-                <span className="cert-topic-tag">Relational DBs</span>
-                <span className="cert-topic-tag">Docker Containers</span>
-                <span className="cert-topic-tag">MLOps Pipelines</span>
-                <span className="cert-topic-tag">Cloud Integration</span>
-              </div>
-
-              <a 
-                href="https://physicswallah.live" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="btn btn-secondary"
-                style={{ marginTop: '16px', justifyContent: 'center' }}
-              >
-                Verify Certification
-              </a>
-            </div>
-          </div>
-        </div>
+        <ResumePortal activeResume={activeResume} setActiveResume={setActiveResume} />
       </section>
 
       {/* CONTACT SECTION */}
@@ -830,112 +577,23 @@ function App() {
         </div>
       </footer>
 
-      {/* AI Assistant Launcher Orb */}
-      <button className="ai-orb-launcher" onClick={() => setChatOpen(true)} aria-label="Open AI Assistant">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-bot">
-          <path d="M12 8V4H8" />
-          <rect width="16" height="12" x="4" y="8" rx="2" />
-          <path d="M2 14h2" />
-          <path d="M20 14h2" />
-          <path d="M15 13v2" />
-          <path d="M9 13v2" />
-        </svg>
-      </button>
+      {/* Modular AI Chatbot */}
+      <AIChatbot 
+        chatOpen={chatOpen} 
+        setChatOpen={setChatOpen} 
+        chatMessages={chatMessages} 
+        chatInput={chatInput} 
+        setChatInput={setChatInput} 
+        handleChatSend={handleChatSend} 
+        handleSuggestionClick={handleSuggestionClick} 
+      />
 
-      {/* AI Chat Window Modal */}
-      {chatOpen && (
-        <>
-          <div className="ai-chat-overlay" onClick={() => setChatOpen(false)}></div>
-          <div className="ai-chat-window">
-            <div className="chat-header">
-              <div className="chat-header-info">
-                <div className="chat-avatar-orb">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 8V4H8" />
-                    <rect width="16" height="12" x="4" y="8" rx="2" />
-                    <path d="M2 14h2" />
-                    <path d="M20 14h2" />
-                    <path d="M15 13v2" />
-                    <path d="M9 13v2" />
-                  </svg>
-                </div>
-                <div className="chat-title">
-                  <h3>Aryan Yadav's AI Copilot</h3>
-                  <p>Online & Responsive</p>
-                </div>
-              </div>
-              <button className="chat-close-btn" onClick={() => setChatOpen(false)} aria-label="Close Chat">
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="chat-messages">
-              {chatMessages.map((msg, index) => (
-                <div key={index} className={`chat-msg ${msg.sender}`}>
-                  <div className="chat-bubble" style={{ whiteSpace: 'pre-line' }}>
-                    {msg.text}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="chat-suggestions">
-              <button className="suggestion-chip" onClick={() => handleSuggestionClick("Explain projects 🚀")}>
-                Explain projects 🚀
-              </button>
-              <button className="suggestion-chip" onClick={() => handleSuggestionClick("Download Resume 📄")}>
-                Download Resume 📄
-              </button>
-              <button className="suggestion-chip" onClick={() => handleSuggestionClick("Are you open to relocate? 📍")}>
-                Open to relocate? 📍
-              </button>
-              <button className="suggestion-chip" onClick={() => handleSuggestionClick("How to contact? 📞")}>
-                How to contact? 📞
-              </button>
-            </div>
-
-            <form className="chat-input-area" onSubmit={handleChatSend}>
-              <input 
-                type="text" 
-                className="chat-input" 
-                placeholder="Ask something about Aryan..." 
-                value={chatInput} 
-                onChange={(e) => setChatInput(e.target.value)} 
-              />
-              <button type="submit" className="chat-send-btn">
-                Send
-              </button>
-            </form>
-          </div>
-        </>
-      )}
-      {/* Greeting Popup Modal */}
-      {greetingOpen && (
-        <div className="greeting-overlay">
-          <div className="greeting-card">
-            <div className="greeting-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rocket">
-                <path d="M4.5 16.5c-1.5 1.26-2 3.43-2 3.43s2.17-.5 3.43-2" />
-                <path d="m22 2-8 8" />
-                <path d="M12 18H8l-4 4V18H3c-1.1 0-2-.9-2-2v-3c0-1.1.9-2 2-2h3l4-4h4" />
-                <path d="M19 5.4 18.6 5a2 2 0 0 0-2.8 0L9.4 11.4a2 2 0 0 0 0 2.8l.4.4" />
-              </svg>
-            </div>
-            <h2 className="greeting-title">Welcome, Recruiter! 🚀</h2>
-            <p className="greeting-text">
-              Hey! Main Aryan Yadav ka digital space portal hu. Aap unke projects live browse kar sakte hain, custom interview slot request trigger kar sakte hain, ya right-bottom me present custom AI Copilot widget se immediately query double check kar sakte hain!
-            </p>
-            <div className="greeting-actions">
-              <button className="btn btn-secondary" onClick={closeGreeting}>
-                Explore Page
-              </button>
-              <button className="btn btn-primary" onClick={handleGreetingChat}>
-                Talk to AI Bot
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modular Recruiter Greeting Modal */}
+      <GreetingModal 
+        isOpen={greetingOpen} 
+        onClose={closeGreeting} 
+        onTalkToAI={handleGreetingChat} 
+      />
     </div>
   );
 }

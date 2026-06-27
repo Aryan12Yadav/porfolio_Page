@@ -1,0 +1,168 @@
+/* Interview Collaboration Center Styles */
+.collab-container {
+  max-width: 1200px;
+  margin: 120px auto 60px;
+  padding: 0 24px;
+  animation: fade-in-up 0.5s ease;
+}
+
+.collab-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-bright);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 32px;
+  transition: var(--transition);
+}
+
+.collab-back-btn:hover {
+  border-color: var(--border-hover);
+  color: var(--primary);
+  transform: translateX(-4px);
+}
+
+.collab-intro {
+  margin-bottom: 48px;
+}
+
+.collab-title {
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 800;
+  color: var(--text-bright);
+  margin-bottom: 12px;
+}
+
+.collab-subtitle {
+  font-size: 16px;
+  color: var(--text);
+  max-width: 600px;
+}
+
+.collab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 32px;
+}
+
+@media (max-width: 480px) {
+  .collab-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.collab-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.collab-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-hover);
+  box-shadow: 0 8px 30px rgba(var(--primary-rgba), 0.1);
+}
+
+.collab-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.collab-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-bright);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.collab-mock-badge {
+  background: rgba(var(--primary-rgba), 0.1);
+  border: 1px solid rgba(var(--primary-rgba), 0.2);
+  color: var(--primary);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.collab-mock-screen {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--text);
+  font-size: 13px;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Specific details for mock views */
+.mock-webcam-container {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  height: 100%;
+}
+
+.mock-webcam-feed {
+  flex: 1;
+  background: #141722;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text);
+}
+
+.mock-code-editor {
+  width: 100%;
+  height: 100%;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 12px;
+  font-size: 11px;
+  text-align: left;
+  color: #39ff14; /* hacker green */
+  overflow-y: hidden;
+}
+
+.mock-whiteboard {
+  width: 90%;
+  height: 80%;
+  border: 1.5px dashed var(--border);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+}
+
+.collab-card-desc {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
