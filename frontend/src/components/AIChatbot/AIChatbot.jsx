@@ -1,5 +1,5 @@
-import React from 'react';
-import { X } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Trash2, Mic } from 'lucide-react';
 import './AIChatbot.css';
 
 export default function AIChatbot({ 
@@ -9,8 +9,45 @@ export default function AIChatbot({
   chatInput, 
   setChatInput, 
   handleChatSend, 
-  handleSuggestionClick 
+  handleSuggestionClick,
+  isTyping,
+  clearChat
 }) {
+  const [isListening, setIsListening] = useState(false);
+
+  const handleVoiceInput = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Voice speech recognition is not supported in this browser. Please try Chrome or Safari.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onerror = (e) => {
+      console.error("Speech recognition error:", e);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setChatInput(transcript);
+    };
+
+    recognition.start();
+  };
+
   return (
     <>
       {/* AI Assistant Launcher Orb */}
@@ -44,12 +81,22 @@ export default function AIChatbot({
                 </div>
                 <div className="chat-title">
                   <h3>Aryan Yadav's AI Copilot</h3>
-                  <p>Online & Responsive</p>
+                  <p>Online &amp; Responsive</p>
                 </div>
               </div>
-              <button className="chat-close-btn" onClick={() => setChatOpen(false)} aria-label="Close Chat">
-                <X size={20} />
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button 
+                  className="chat-action-header-btn" 
+                  onClick={clearChat} 
+                  title="Clear Conversation"
+                  aria-label="Clear chat history"
+                >
+                  <Trash2 size={16} />
+                </button>
+                <button className="chat-close-btn" onClick={() => setChatOpen(false)} aria-label="Close Chat">
+                  <X size={20} />
+                </button>
+              </div>
             </div>
 
             <div className="chat-messages">
@@ -60,6 +107,15 @@ export default function AIChatbot({
                   </div>
                 </div>
               ))}
+              {isTyping && (
+                <div className="chat-msg assistant">
+                  <div className="chat-bubble typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="chat-suggestions">
@@ -78,13 +134,37 @@ export default function AIChatbot({
             </div>
 
             <form className="chat-input-area" onSubmit={handleChatSend}>
-              <input 
-                type="text" 
-                className="chat-input" 
-                placeholder="Ask something about Aryan..." 
-                value={chatInput} 
-                onChange={(e) => setChatInput(e.target.value)} 
-              />
+              <div style={{ display: 'flex', flex: 1, position: 'relative', alignItems: 'center' }}>
+                <input 
+                  type="text" 
+                  className="chat-input" 
+                  placeholder={isListening ? "Listening..." : "Ask something about Aryan..."} 
+                  value={chatInput} 
+                  onChange={(e) => setChatInput(e.target.value)} 
+                  disabled={isListening}
+                  style={{ paddingRight: '40px' }}
+                />
+                <button 
+                  type="button" 
+                  className={`chat-mic-btn ${isListening ? 'listening' : ''}`} 
+                  onClick={handleVoiceInput}
+                  title="Speak to Assistant"
+                  style={{
+                    position: 'absolute',
+                    right: '12px',
+                    background: 'none',
+                    border: 'none',
+                    color: isListening ? '#ef4444' : 'var(--text)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '4px'
+                  }}
+                >
+                  <Mic size={18} className={isListening ? 'voice-pulse' : ''} />
+                </button>
+              </div>
               <button type="submit" className="chat-send-btn">
                 Send
               </button>

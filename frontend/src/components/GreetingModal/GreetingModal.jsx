@@ -17,11 +17,33 @@ export default function GreetingModal({ isOpen, onClose, onTalkToAI }) {
         </div>
         <h2 className="greeting-title">Welcome, Recruiter! 🚀</h2>
         <p className="greeting-text">
-          Hello! I am Aryan Yadav's digital space portal. You can explore his featured projects, trigger custom interview slot scheduling requests, or directly converse with his AI Assistant widget at the bottom right to get answers to your queries instantly!
+          Hello! I am Aryan Yadav's digital portfolio space. Explore my software engineering workspace, launch live collaboration sessions, or interview me online:
         </p>
+
+        <div className="greeting-features-list" style={{ width: '100%', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '14px', margin: '8px 0' }}>
+          <div className="greeting-feature-item" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', fontSize: '13.5px', color: 'var(--text)', lineHeight: '1.5' }}>
+            <span style={{ fontSize: '18px', lineHeight: '1' }}>⚡</span>
+            <div>
+              <strong>Full-Stack & MLOps Engineer:</strong> Check out my featured projects built with React, Django, FastAPI, Docker, and deployed on AWS EC2.
+            </div>
+          </div>
+          <div className="greeting-feature-item" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', fontSize: '13.5px', color: 'var(--text)', lineHeight: '1.5' }}>
+            <span style={{ fontSize: '18px', lineHeight: '1' }}>🖥️</span>
+            <div>
+              <strong>Online Interview Panel:</strong> Open the **Interview Collab** workspace at the top to access a live collaborative drawing Whiteboard, Code sandbox editor, and Video calling feeds.
+            </div>
+          </div>
+          <div className="greeting-feature-item" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', fontSize: '13.5px', color: 'var(--text)', lineHeight: '1.5' }}>
+            <span style={{ fontSize: '18px', lineHeight: '1' }}>🤖</span>
+            <div>
+              <strong>AI Copilot Chatbot:</strong> Ask the interactive chatbot at the bottom right any questions about my technical background, projects, or coding history.
+            </div>
+          </div>
+        </div>
+
         <div className="greeting-actions">
           <button className="btn btn-secondary" onClick={onClose}>
-            Explore Page
+            Explore Site
           </button>
           <button className="btn btn-primary" onClick={onTalkToAI}>
             Talk to AI Bot

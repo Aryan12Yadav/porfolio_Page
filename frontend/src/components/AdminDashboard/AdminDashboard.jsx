@@ -12,6 +12,7 @@ export default function AdminDashboard({ backToPortfolio }) {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   // Check if already logged in this session
   useEffect(() => {
@@ -76,8 +77,7 @@ export default function AdminDashboard({ backToPortfolio }) {
     setPassword('');
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to decline and remove this request?")) return;
+  const executeDelete = async (id) => {
     try {
       await axios.delete(`http://127.0.0.1:8000/api/admin/interview-requests/${id}/`, {
         headers: { Authorization: authHeader }
@@ -89,8 +89,23 @@ export default function AdminDashboard({ backToPortfolio }) {
     }
   };
 
-  const generateMailto = (req) => {
-    const formattedDate = new Date(req.requested_date).toLocaleString();
+  const formatDateTime = (dateStr) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  const generateGmailUrl = (req) => {
+    const formattedDate = formatDateTime(req.requested_date);
     const subject = encodeURIComponent(`Interview Schedule Confirmation - Aryan Yadav`);
     const body = encodeURIComponent(
       `Hi ${req.recruiter_name},\n\n` +
@@ -101,7 +116,7 @@ export default function AdminDashboard({ backToPortfolio }) {
       `Best regards,\n` +
       `Aryan Yadav`
     );
-    return `mailto:${req.email}?subject=${subject}&body=${body}`;
+    return `https://mail.google.com/mail/?view=cm&fs=1&to=${req.email}&su=${subject}&body=${body}`;
   };
 
   const filteredRequests = requests.filter(req => 
@@ -237,7 +252,7 @@ export default function AdminDashboard({ backToPortfolio }) {
                   </td>
                   <td>
                     <div className="date-block">
-                      <Calendar size={14} /> <span>{new Date(req.requested_date).toLocaleString()}</span>
+                      <Calendar size={14} /> <span>{formatDateTime(req.requested_date)}</span>
                     </div>
                   </td>
                   <td className="message-cell">
@@ -245,10 +260,16 @@ export default function AdminDashboard({ backToPortfolio }) {
                   </td>
                   <td>
                     <div className="table-actions">
-                      <a href={generateMailto(req)} className="action-btn approve-btn" title="Approve & Send Email">
+                      <a 
+                        href={generateGmailUrl(req)} 
+                        className="action-btn approve-btn" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        title="Confirm & Open Gmail"
+                      >
                         <Check size={16} /> Confirm
                       </a>
-                      <button className="action-btn delete-btn" onClick={() => handleDelete(req.id)} title="Decline Schedule">
+                      <button className="action-btn delete-btn" onClick={() => setDeleteConfirmId(req.id)} title="Decline Schedule">
                         <Trash2 size={16} /> Decline
                       </button>
                     </div>
@@ -257,6 +278,31 @@ export default function AdminDashboard({ backToPortfolio }) {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Delete Confirmation Custom Modal */}
+      {deleteConfirmId && (
+        <div className="admin-modal-overlay">
+          <div className="admin-modal-card">
+            <h3>Decline Request</h3>
+            <p>Are you sure you want to decline and permanently delete this schedule request?</p>
+            <div className="admin-modal-actions">
+              <button className="btn btn-secondary" onClick={() => setDeleteConfirmId(null)}>
+                Cancel
+              </button>
+              <button 
+                className="btn btn-danger" 
+                onClick={() => {
+                  executeDelete(deleteConfirmId);
+                  setDeleteConfirmId(null);
+                }}
+                style={{ background: '#ef4444', color: '#fff', border: 'none' }}
+              >
+                Decline
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

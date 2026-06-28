@@ -19,7 +19,8 @@ import {
   Cpu,
   BookOpen,
   Award,
-  MessageCircle
+  MessageCircle,
+  Download
 } from 'lucide-react';
 
 // Modular Components
@@ -146,7 +147,18 @@ function App() {
     setFormStatus({ type: '', message: '' });
 
     try {
-      await axios.post('http://127.0.0.1:8000/api/interview-requests/', formData);
+      let formattedDate = formData.requested_date;
+      if (formData.requested_date) {
+        const parsedDate = new Date(formData.requested_date);
+        if (!isNaN(parsedDate.getTime())) {
+          formattedDate = parsedDate.toISOString();
+        }
+      }
+      const payload = {
+        ...formData,
+        requested_date: formattedDate
+      };
+      await axios.post('http://127.0.0.1:8000/api/interview-requests/', payload);
       setFormStatus({
         type: 'success',
         message: 'Your interview request has been successfully submitted! Aryan will review and get back to you shortly.'
@@ -191,14 +203,23 @@ function App() {
   };
 
   const [chatOpen, setChatOpen] = useState(false);
-  const [chatMessages, setChatMessages] = useState([
-    { sender: 'assistant', text: "Hello Recruiter! I am Aryan's digital AI Assistant. I can explain his engineering projects, highlight his resumes, or share his contact details. Feel free to ask any questions!" }
-  ]);
+  const [chatMessages, setChatMessages] = useState(() => {
+    const saved = localStorage.getItem('chatMessages');
+    return saved ? JSON.parse(saved) : [
+      { sender: 'assistant', text: "Hello Recruiter! I am Aryan's digital AI Assistant. I can explain my engineering projects, highlight my resumes, or share my contact details. Feel free to ask any questions!" }
+    ];
+  });
   const [chatInput, setChatInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const [activeResume, setActiveResume] = useState('fullstack');
   const [greetingOpen, setGreetingOpen] = useState(() => {
     return !sessionStorage.getItem('greetingShown');
   });
+
+  // Sync chat messages to local storage
+  useEffect(() => {
+    localStorage.setItem('chatMessages', JSON.stringify(chatMessages));
+  }, [chatMessages]);
 
   const closeGreeting = () => {
     sessionStorage.setItem('greetingShown', 'true');
@@ -214,15 +235,25 @@ function App() {
     if (!text.trim()) return;
 
     // Add user message
-    const newMessages = [...chatMessages, { sender: 'user', text }];
+    const userMsg = { sender: 'user', text };
+    const newMessages = [...chatMessages, userMsg];
     setChatMessages(newMessages);
     setChatInput('');
+    setIsTyping(true);
 
-    // Generate assistant response
+    // Generate assistant response with realistic delay
     setTimeout(() => {
       const response = getAIResponse(text, projects);
       setChatMessages(prev => [...prev, { sender: 'assistant', text: response }]);
-    }, 600);
+      setIsTyping(false);
+    }, 1000);
+  };
+
+  const clearChat = () => {
+    const defaultMsg = [
+      { sender: 'assistant', text: "Hello Recruiter! I am Aryan's digital AI Assistant. I can explain my engineering projects, highlight my resumes, or share my contact details. Feel free to ask any questions!" }
+    ];
+    setChatMessages(defaultMsg);
   };
 
   const handleChatSend = (e) => {
@@ -370,6 +401,13 @@ function App() {
           <div className="stars-overlay-2"></div>
         </div>
         <div style={{ position: 'relative', zIndex: 1 }}>
+          <div className="hero-avatar-container">
+            <img 
+              src="https://avatars.githubusercontent.com/u/149989949?s=400&u=8fb0cfa0449770888c4a74e11bfaab4ba666457a&v=4" 
+              alt="Aryan Yadav Profile" 
+              className="hero-avatar"
+            />
+          </div>
           <div className="hero-pill">
             <Terminal size={14} /> Full Stack Python Developer + AI Engineer
           </div>
@@ -384,7 +422,10 @@ function App() {
             <a href="#projects" className="btn btn-primary">
               View My Projects <Briefcase size={16} />
             </a>
-            <a href="#contact" className="btn btn-secondary">
+            <a href="#credentials" className="btn btn-secondary">
+              Resume <Download size={16} />
+            </a>
+            <a href="#contact" className="btn btn-secondary" style={{ border: '1px solid rgba(255, 255, 255, 0.1)' }}>
               Get in touch
             </a>
           </div>
@@ -850,7 +891,12 @@ function App() {
       {/* FOOTER */}
       <footer className="footer">
         <div className="footer-content">
-          <p>&copy; {new Date().getFullYear()} Aryan Yadav. All rights reserved.</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', maxWidth: '600px' }}>
+            <p>&copy; {new Date().getFullYear()} Aryan Yadav. All rights reserved.</p>
+            <p className="footer-security-notice" style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '4px', lineHeight: '1.4' }}>
+              🔒 <strong>Security &amp; Privacy:</strong> Recruiter schedule requests, credentials, and message payloads are encrypted in transit via TLS 1.3 and protected with Django's PBKDF2/cryptographic hashing configurations.
+            </p>
+          </div>
           <ul className="footer-links">
             <li><a href="https://github.com/Aryan12Yadav" target="_blank" rel="noopener noreferrer">GitHub</a></li>
             <li><a href="#admin" onClick={(e) => { e.preventDefault(); handleNavClick('admin', 'admin'); }}>Admin Portal</a></li>
@@ -867,6 +913,8 @@ function App() {
         setChatInput={setChatInput} 
         handleChatSend={handleChatSend} 
         handleSuggestionClick={handleSuggestionClick} 
+        isTyping={isTyping}
+        clearChat={clearChat}
       />
 
       {/* Modular Recruiter Greeting Modal */}

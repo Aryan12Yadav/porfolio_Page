@@ -118,36 +118,85 @@ export default function ResumePortal({ activeResume, setActiveResume }) {
         )}
       </div>
 
-      <div className="cert-card">
-        <div className="cert-header">
-          <span className="cert-badge">Verified Credentials</span>
-          <h3 className="cert-title">Full Stack Data Science Pro</h3>
-          <span className="cert-authority">Physics Wallah (PW)</span>
-        </div>
-        
-        <div className="cert-body">
-          <p className="cert-syllabus-summary">
-            Comprehensive training covering advanced python scripting, exploratory data analysis, machine learning algorithms, deep learning deployments, cloud pipeline automation (MLOps), and relational database indexing.
-          </p>
-          
-          <h4 style={{ fontSize: '14px', color: 'var(--text-bright)', fontWeight: '700' }}>Key Syllabus Competencies</h4>
-          <div className="cert-topics-list">
-            <span className="cert-topic-tag">EDA & Modeling</span>
-            <span className="cert-topic-tag">Relational DBs</span>
-            <span className="cert-topic-tag">Docker Containers</span>
-            <span className="cert-topic-tag">MLOps Pipelines</span>
-            <span className="cert-topic-tag">Cloud Integration</span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        {/* Physics Wallah Certificate Card */}
+        <div className="cert-card">
+          <div className="cert-header">
+            <span className="cert-badge">Verified Credentials</span>
+            <h3 className="cert-title">Full Stack Data Science Pro</h3>
+            <span className="cert-duration" style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', display: 'block', marginTop: '4px' }}>2-Year Comprehensive Program</span>
+            <span className="cert-authority">Physics Wallah (PW)</span>
           </div>
+          
+          <div className="cert-body">
+            <p className="cert-syllabus-summary">
+              A rigorous 2-year industrial program covering advanced Python engineering, exploratory data analysis, machine learning algorithms, deep learning deployments, MLOps cloud pipeline automation, and relational database system management.
+            </p>
+            
+            <div className="cert-meta-info" style={{ margin: '12px 0', fontSize: '13px', color: 'var(--text)', borderLeft: '2px solid var(--primary)', paddingLeft: '10px' }}>
+              <div><strong>Issue Date:</strong> January 30, 2025</div>
+              <div style={{ marginTop: '2px' }}><strong>Credential ID:</strong> <code style={{ fontSize: '11px', color: 'var(--text-bright)' }}>4e835d36-2fda-4020-ae8b-389803c27cce</code></div>
+            </div>
 
-          <a 
-            href="https://physicswallah.live" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="btn btn-secondary"
-            style={{ marginTop: '16px', justifyContent: 'center' }}
-          >
-            Verify Certification
-          </a>
+            <h4 style={{ fontSize: '14px', color: 'var(--text-bright)', fontWeight: '700', marginTop: '16px' }}>Key Syllabus Competencies</h4>
+            <div className="cert-topics-list">
+              <span className="cert-topic-tag">EDA & Modeling</span>
+              <span className="cert-topic-tag">Relational DBs</span>
+              <span className="cert-topic-tag">Docker Containers</span>
+              <span className="cert-topic-tag">MLOps Pipelines</span>
+              <span className="cert-topic-tag">Cloud Integration</span>
+            </div>
+
+            <a 
+              href="https://pwskills.com/learn/certificate/4e835d36-2fda-4020-ae8b-389803c27cce" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="btn btn-secondary"
+              style={{ marginTop: '16px', justifyContent: 'center' }}
+            >
+              Verify Certificate
+            </a>
+          </div>
+        </div>
+
+        {/* CodSoft Internship Certificate Card */}
+        <div className="cert-card">
+          <div className="cert-header">
+            <span className="cert-badge" style={{ background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.3)', color: '#60a5fa' }}>Verified Internship</span>
+            <h3 className="cert-title">Python Programming Intern</h3>
+            <span className="cert-duration" style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', display: 'block', marginTop: '4px' }}>4-Week Virtual Internship (First Year)</span>
+            <span className="cert-authority">CodSoft</span>
+          </div>
+          
+          <div className="cert-body">
+            <p className="cert-syllabus-summary">
+              Successfully completed a comprehensive 4-week software engineering internship focusing on core Python architecture, object-oriented concepts, and task automation scripting.
+            </p>
+            
+            <div className="cert-meta-info" style={{ margin: '12px 0', fontSize: '13px', color: 'var(--text)', borderLeft: '2px solid var(--primary)', paddingLeft: '10px' }}>
+              <div><strong>Internship Period:</strong> 25/08/2024 to 25/09/2024</div>
+              <div style={{ marginTop: '2px' }}><strong>Issue Date:</strong> September 28, 2024</div>
+              <div style={{ marginTop: '2px' }}><strong>Certificate ID:</strong> <code style={{ fontSize: '11px', color: 'var(--text-bright)' }}>b405765</code></div>
+            </div>
+
+            <h4 style={{ fontSize: '14px', color: 'var(--text-bright)', fontWeight: '700', marginTop: '16px' }}>Key Syllabus Competencies</h4>
+            <div className="cert-topics-list">
+              <span className="cert-topic-tag">OOPs Concepts</span>
+              <span className="cert-topic-tag">Python Scripting</span>
+              <span className="cert-topic-tag">Data Structures</span>
+              <span className="cert-topic-tag">Task Automation</span>
+            </div>
+
+            <a 
+              href="https://www.codsoft.in" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="btn btn-secondary"
+              style={{ marginTop: '16px', justifyContent: 'center' }}
+            >
+              Verify Company
+            </a>
+          </div>
         </div>
       </div>
     </div>
