@@ -39,7 +39,12 @@ export default function AdminDashboard({ backToPortfolio }) {
     try {
       const config = authHeader ? { headers: { Authorization: authHeader } } : {};
       const res = await axios.get(`${API_BASE_URL}/api/admin/interview-requests/`, config);
-      setRequests(res.data);
+      if (Array.isArray(res.data)) {
+        setRequests(res.data);
+      } else {
+        console.warn("Interview requests API did not return an array.");
+        setRequests([]);
+      }
     } catch (err) {
       console.error(err);
       if (err.response && err.response.status === 401 && isAuthenticated) {

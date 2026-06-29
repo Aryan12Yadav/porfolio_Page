@@ -271,7 +271,12 @@ function App() {
     // Fetch projects from Django Backend
     axios.get(`${API_BASE_URL}/api/projects/`)
       .then(response => {
-        setProjects(response.data);
+        if (Array.isArray(response.data)) {
+          setProjects(response.data);
+        } else {
+          console.warn("API response is not an array, falling back to mock data.");
+          setProjects(fallbackProjects);
+        }
         setLoading(false);
       })
       .catch(err => {
