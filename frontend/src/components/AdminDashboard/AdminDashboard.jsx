@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Search, LogOut, Check, Trash2, Mail, Calendar, User, Phone, Briefcase, Lock } from 'lucide-react';
 import './AdminDashboard.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+
 export default function AdminDashboard({ backToPortfolio }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
@@ -36,7 +38,7 @@ export default function AdminDashboard({ backToPortfolio }) {
     setLoading(true);
     try {
       const config = authHeader ? { headers: { Authorization: authHeader } } : {};
-      const res = await axios.get('http://127.0.0.1:8000/api/admin/interview-requests/', config);
+      const res = await axios.get(`${API_BASE_URL}/api/admin/interview-requests/`, config);
       setRequests(res.data);
     } catch (err) {
       console.error(err);
@@ -67,7 +69,7 @@ export default function AdminDashboard({ backToPortfolio }) {
     const basicAuth = `Basic ${token}`;
 
     try {
-      await axios.get('http://127.0.0.1:8000/api/admin/interview-requests/', {
+      await axios.get(`${API_BASE_URL}/api/admin/interview-requests/`, {
         headers: { Authorization: basicAuth }
       });
       sessionStorage.setItem('adminAuth', basicAuth);
@@ -91,7 +93,7 @@ export default function AdminDashboard({ backToPortfolio }) {
 
   const executeDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/admin/interview-requests/${id}/`, {
+      await axios.delete(`${API_BASE_URL}/api/admin/interview-requests/${id}/`, {
         headers: { Authorization: authHeader }
       });
       setRequests(requests.filter(req => req.id !== id));

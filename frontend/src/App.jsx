@@ -23,6 +23,8 @@ import {
   Download
 } from 'lucide-react';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+
 // Modular Components
 import Typewriter from './components/Typewriter/Typewriter';
 import InterviewCenter from './components/InterviewCenter/InterviewCenter';
@@ -158,7 +160,7 @@ function App() {
         ...formData,
         requested_date: formattedDate
       };
-      await axios.post('http://127.0.0.1:8000/api/interview-requests/', payload);
+      await axios.post(`${API_BASE_URL}/api/interview-requests/`, payload);
       setFormStatus({
         type: 'success',
         message: 'Your interview request has been successfully submitted! Aryan will review and get back to you shortly.'
@@ -267,7 +269,7 @@ function App() {
 
   useEffect(() => {
     // Fetch projects from Django Backend
-    axios.get('http://127.0.0.1:8000/api/projects/')
+    axios.get(`${API_BASE_URL}/api/projects/`)
       .then(response => {
         setProjects(response.data);
         setLoading(false);

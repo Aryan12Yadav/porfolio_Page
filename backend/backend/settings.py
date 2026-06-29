@@ -68,6 +68,8 @@ ROOT_URLCONF = 'backend.urls'
 
 CORS_ALLOWED_ORIGINS = [ 
     'http://localhost:5173',
+    'https://aryan-porfolio.pages.dev',
+    
 ]
 
 TEMPLATES = [

@@ -96,7 +96,7 @@ jobs:
 
       - name: Build Frontend for Production
         env:
-          VITE_API_URL: 'https://portfolio-backend.onrender.com' # Production URL
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
           cd frontend
           npm run build
