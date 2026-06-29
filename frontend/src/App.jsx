@@ -643,7 +643,7 @@ function App() {
                   </div>
                   <div className="profile-stat-divider"></div>
                   <div className="profile-metric-item">
-                    <span className="profile-metric-value">15+</span>
+                    <span className="profile-metric-value">35+</span>
                     <span className="profile-metric-label">Repositories</span>
                   </div>
                 </div>
