@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, LogOut, Check, Trash2, Mail, Calendar, User, Phone, Briefcase } from 'lucide-react';
+import { Search, LogOut, Check, Trash2, Mail, Calendar, User, Phone, Briefcase, Lock } from 'lucide-react';
 import './AdminDashboard.css';
 
 export default function AdminDashboard({ backToPortfolio }) {
@@ -14,6 +14,16 @@ export default function AdminDashboard({ backToPortfolio }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
+  // New authentication states
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [authTab, setAuthTab] = useState('login'); // 'login' | 'register'
+  const [regUsername, setRegUsername] = useState('');
+  const [regPassword, setRegPassword] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regError, setRegError] = useState('');
+  const [regSuccess, setRegSuccess] = useState('');
+  const [pendingAction, setPendingAction] = useState(null);
+
   // Check if already logged in this session
   useEffect(() => {
     const savedAuth = sessionStorage.getItem('adminAuth');
@@ -23,23 +33,20 @@ export default function AdminDashboard({ backToPortfolio }) {
     }
   }, []);
 
-  // Fetch requests when authenticated
+  // Fetch requests on mount or when authHeader changes
   useEffect(() => {
-    if (isAuthenticated && authHeader) {
-      fetchRequests();
-    }
-  }, [isAuthenticated, authHeader]);
+    fetchRequests();
+  }, [authHeader]);
 
   const fetchRequests = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://127.0.0.1:8000/api/admin/interview-requests/', {
-        headers: { Authorization: authHeader }
-      });
+      const config = authHeader ? { headers: { Authorization: authHeader } } : {};
+      const res = await axios.get('http://127.0.0.1:8000/api/admin/interview-requests/', config);
       setRequests(res.data);
     } catch (err) {
       console.error(err);
-      if (err.response && err.response.status === 401) {
+      if (err.response && err.response.status === 401 && isAuthenticated) {
         handleLogout();
       }
     } finally {
@@ -47,25 +54,75 @@ export default function AdminDashboard({ backToPortfolio }) {
     }
   };
 
-  const handleLogin = async (e) => {
+  const executePendingAction = (authHeaderVal, currentPending = pendingAction) => {
+    if (!currentPending) return;
+    
+    if (currentPending.type === 'confirm') {
+      const gmailUrl = generateGmailUrl(currentPending.data);
+      window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+    } else if (currentPending.type === 'delete') {
+      setDeleteConfirmId(currentPending.data);
+    }
+    setPendingAction(null);
+  };
+
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setLoginError('');
-    // Encode username:password to base64 for Basic Auth
     const token = btoa(`${username}:${password}`);
     const basicAuth = `Basic ${token}`;
 
     try {
-      // Test the credentials by making a request
       await axios.get('http://127.0.0.1:8000/api/admin/interview-requests/', {
         headers: { Authorization: basicAuth }
       });
-      // If successful, save token
       sessionStorage.setItem('adminAuth', basicAuth);
       setAuthHeader(basicAuth);
       setIsAuthenticated(true);
+      setShowAuthPopup(false);
+      executePendingAction(basicAuth);
     } catch (err) {
       console.error(err);
-      setLoginError('Invalid admin username or password. Please try again.');
+      setLoginError('Invalid username or password. Please try again.');
+    }
+  };
+
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    setRegError('');
+    setRegSuccess('');
+
+    try {
+      await axios.post('http://127.0.0.1:8000/api/admin/register/', {
+        username: regUsername,
+        password: regPassword,
+        email: regEmail
+      });
+      setRegSuccess('Registration successful! Logging in...');
+      
+      const token = btoa(`${regUsername}:${regPassword}`);
+      const basicAuth = `Basic ${token}`;
+      
+      setTimeout(() => {
+        sessionStorage.setItem('adminAuth', basicAuth);
+        setAuthHeader(basicAuth);
+        setIsAuthenticated(true);
+        setShowAuthPopup(false);
+        setUsername(regUsername);
+        setPassword(regPassword);
+        setRegUsername('');
+        setRegPassword('');
+        setRegEmail('');
+        setRegSuccess('');
+        executePendingAction(basicAuth);
+      }, 1000);
+    } catch (err) {
+      console.error(err);
+      if (err.response && err.response.data && err.response.data.error) {
+        setRegError(err.response.data.error);
+      } else {
+        setRegError('Registration failed. Please check credentials.');
+      }
     }
   };
 
@@ -119,61 +176,30 @@ export default function AdminDashboard({ backToPortfolio }) {
     return `https://mail.google.com/mail/?view=cm&fs=1&to=${req.email}&su=${subject}&body=${body}`;
   };
 
+  const handleConfirmClick = (e, req) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      setPendingAction({ type: 'confirm', data: req });
+      setAuthTab('login');
+      setShowAuthPopup(true);
+    }
+  };
+
+  const handleDeleteClick = (id) => {
+    if (!isAuthenticated) {
+      setPendingAction({ type: 'delete', data: id });
+      setAuthTab('login');
+      setShowAuthPopup(true);
+    } else {
+      setDeleteConfirmId(id);
+    }
+  };
+
   const filteredRequests = requests.filter(req => 
     req.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
     req.recruiter_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     req.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  if (!isAuthenticated) {
-    return (
-      <div className="admin-login-container">
-        <div className="admin-login-card">
-          <h2 className="admin-title">Admin Portal 🔐</h2>
-          <p className="admin-subtitle">Authenticate to view interview scheduling submissions</p>
-
-          <form onSubmit={handleLogin} className="admin-form">
-            {loginError && <div className="admin-error">{loginError}</div>}
-            
-            <div className="form-group">
-              <label htmlFor="admin-user">Username</label>
-              <input 
-                type="text" 
-                id="admin-user" 
-                value={username} 
-                onChange={(e) => setUsername(e.target.value)} 
-                className="form-input" 
-                placeholder="Enter Username"
-                required 
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="admin-pass">Password</label>
-              <input 
-                type="password" 
-                id="admin-pass" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                className="form-input" 
-                placeholder="Enter Password"
-                required 
-              />
-            </div>
-
-            <div className="admin-login-actions">
-              <button type="button" className="btn btn-secondary" onClick={backToPortfolio}>
-                Back to Site
-              </button>
-              <button type="submit" className="btn btn-primary">
-                Login
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="admin-dashboard-container">
@@ -186,9 +212,15 @@ export default function AdminDashboard({ backToPortfolio }) {
           <button className="btn btn-secondary" onClick={backToPortfolio}>
             Back to Site
           </button>
-          <button className="btn btn-primary logout-btn" onClick={handleLogout}>
-            <LogOut size={16} /> Logout
-          </button>
+          {isAuthenticated ? (
+            <button className="btn btn-primary logout-btn" onClick={handleLogout}>
+              <LogOut size={16} /> Logout
+            </button>
+          ) : (
+            <button className="btn btn-primary" onClick={() => { setAuthTab('login'); setShowAuthPopup(true); }}>
+              <Lock size={16} /> Login / Register
+            </button>
+          )}
         </div>
       </header>
 
@@ -261,15 +293,16 @@ export default function AdminDashboard({ backToPortfolio }) {
                   <td>
                     <div className="table-actions">
                       <a 
-                        href={generateGmailUrl(req)} 
+                        href={isAuthenticated ? generateGmailUrl(req) : "#"} 
+                        onClick={(e) => handleConfirmClick(e, req)}
                         className="action-btn approve-btn" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                        target={isAuthenticated ? "_blank" : undefined}
+                        rel={isAuthenticated ? "noopener noreferrer" : undefined} 
                         title="Confirm & Open Gmail"
                       >
                         <Check size={16} /> Confirm
                       </a>
-                      <button className="action-btn delete-btn" onClick={() => setDeleteConfirmId(req.id)} title="Decline Schedule">
+                      <button className="action-btn delete-btn" onClick={() => handleDeleteClick(req.id)} title="Decline Schedule">
                         <Trash2 size={16} /> Decline
                       </button>
                     </div>
@@ -302,6 +335,129 @@ export default function AdminDashboard({ backToPortfolio }) {
                 Decline
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Login & Register Popup Dialog Modal */}
+      {showAuthPopup && (
+        <div className="admin-modal-overlay">
+          <div className="admin-modal-card auth-popup-card">
+            <div className="auth-popup-tabs">
+              <button 
+                className={`auth-popup-tab-btn ${authTab === 'login' ? 'active' : ''}`}
+                onClick={() => { setAuthTab('login'); setLoginError(''); setRegError(''); }}
+              >
+                Login
+              </button>
+              <button 
+                className={`auth-popup-tab-btn ${authTab === 'register' ? 'active' : ''}`}
+                onClick={() => { setAuthTab('register'); setLoginError(''); setRegError(''); }}
+              >
+                Register
+              </button>
+            </div>
+
+            {authTab === 'login' ? (
+              <form onSubmit={handleLoginSubmit} className="admin-form">
+                <h4 style={{ color: 'var(--text-bright)', marginBottom: '4px' }}>Account Login</h4>
+                <p style={{ fontSize: '13px', color: 'var(--text-dim)', marginBottom: '16px' }}>
+                  Please login to confirm or decline interview schedules.
+                </p>
+                {loginError && <div className="admin-error" style={{ color: '#ef4444', fontSize: '13px', marginBottom: '12px' }}>{loginError}</div>}
+                
+                <div className="form-group">
+                  <label htmlFor="auth-user">Username</label>
+                  <input 
+                    type="text" 
+                    id="auth-user" 
+                    value={username} 
+                    onChange={(e) => setUsername(e.target.value)} 
+                    className="form-input" 
+                    placeholder="Enter Username"
+                    required 
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="auth-pass">Password</label>
+                  <input 
+                    type="password" 
+                    id="auth-pass" 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                    className="form-input" 
+                    placeholder="Enter Password"
+                    required 
+                  />
+                </div>
+
+                <div className="admin-login-actions" style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+                  <button type="button" className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowAuthPopup(false)}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                    Login
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleRegisterSubmit} className="admin-form">
+                <h4 style={{ color: 'var(--text-bright)', marginBottom: '4px' }}>Create Account</h4>
+                <p style={{ fontSize: '13px', color: 'var(--text-dim)', marginBottom: '16px' }}>
+                  Create an account to manage interview schedule slots.
+                </p>
+                {regError && <div className="admin-error" style={{ color: '#ef4444', fontSize: '13px', marginBottom: '12px' }}>{regError}</div>}
+                {regSuccess && <div className="admin-success" style={{ color: '#22c55e', fontSize: '13px', marginBottom: '12px' }}>{regSuccess}</div>}
+                
+                <div className="form-group">
+                  <label htmlFor="reg-user">Username</label>
+                  <input 
+                    type="text" 
+                    id="reg-user" 
+                    value={regUsername} 
+                    onChange={(e) => setRegUsername(e.target.value)} 
+                    className="form-input" 
+                    placeholder="Create Username"
+                    required 
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="reg-email">Email (Optional)</label>
+                  <input 
+                    type="email" 
+                    id="reg-email" 
+                    value={regEmail} 
+                    onChange={(e) => setRegEmail(e.target.value)} 
+                    className="form-input" 
+                    placeholder="Enter Email"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="reg-pass">Password</label>
+                  <input 
+                    type="password" 
+                    id="reg-pass" 
+                    value={regPassword} 
+                    onChange={(e) => setRegPassword(e.target.value)} 
+                    className="form-input" 
+                    placeholder="Create Password"
+                    required 
+                  />
+                </div>
+
+                <div className="admin-login-actions" style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+                  <button type="button" className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowAuthPopup(false)}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                    Register
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
