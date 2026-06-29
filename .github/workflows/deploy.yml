@@ -65,7 +65,7 @@ jobs:
 
   deploy-backend:
     name: Deploy Backend (CD)
-    needs: [ci-backend, ci-frontend]
+    needs: ci-backend
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Render Deploy Hook
@@ -76,7 +76,7 @@ jobs:
 
   deploy-frontend:
     name: Deploy Frontend (CD)
-    needs: [ci-backend, ci-frontend]
+    needs: ci-frontend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
