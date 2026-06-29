@@ -35,11 +35,10 @@ class InterviewRequestTests(APITestCase):
         self.assertEqual(InterviewRequest.objects.count(), 2)
         self.assertEqual(InterviewRequest.objects.latest('created_at').recruiter_name, 'John Smith')
 
-    def test_list_requests_unauthenticated_succeeds(self):
+    def test_list_requests_unauthenticated_fails(self):
         url = reverse('admin-interview-request-list')
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_list_requests_authenticated_admin_succeeds(self):
         url = reverse('admin-interview-request-list')

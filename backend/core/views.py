@@ -26,7 +26,7 @@ class InterviewRequestList(generics.ListAPIView):
     """
     queryset = InterviewRequest.objects.all().order_by("-created_at")
     serializer_class = InterviewRequestSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAdminUser]
     authentication_classes = [BasicAuthentication, SessionAuthentication]
 
 class InterviewRequestDetail(generics.RetrieveDestroyAPIView):
@@ -42,13 +42,20 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 def create_temp_admin(request):
     User = get_user_model()
-    username = request.GET.get('user', 'admin')
-    password = request.GET.get('password', 'wtuYCrdv8gdfvKxghNM13FEyDXXBqQFO')
-    if not User.objects.filter(username=username).exists():
-        User.objects.create_superuser(username=username, email='admin@example.com', password=password)
-        user_created = True
-    else:
-        user_created = False
+    
+    # 1. Setup 'aryan' user
+    aryan_user, aryan_created = User.objects.get_or_create(username='aryan', defaults={'email': 'aryanyadav892408@gmail.com'})
+    aryan_user.set_password('12345')
+    aryan_user.is_staff = True
+    aryan_user.is_superuser = True
+    aryan_user.save()
+    
+    # 2. Setup 'admin' user
+    admin_user, admin_created = User.objects.get_or_create(username='admin', defaults={'email': 'admin@example.com'})
+    admin_user.set_password('admin12345')
+    admin_user.is_staff = True
+    admin_user.is_superuser = True
+    admin_user.save()
         
     projects_seeded = 0
     if Project.objects.count() == 0:
@@ -88,11 +95,13 @@ def create_temp_admin(request):
             Project.objects.create(**proj)
             projects_seeded += 1
 
-    msg = []
-    if user_created:
-        msg.append(f"Superuser '{username}' created successfully!")
-    else:
-        msg.append(f"Superuser '{username}' already exists.")
+    msg = [
+        "Setup completed:",
+        f"- User 'aryan' (password: 12345) - Active & Admin: Yes",
+        f"- User 'admin' (password: admin12345) - Active & Admin: Yes"
+    ]
     if projects_seeded > 0:
-        msg.append(f"Seeded {projects_seeded} default projects into the database.")
+        msg.append(f"- Seeded {projects_seeded} default projects into the database.")
+    else:
+        msg.append("- Database projects already seeded.")
     return HttpResponse("<br>".join(msg))
