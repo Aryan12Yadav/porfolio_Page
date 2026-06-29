@@ -420,36 +420,3 @@
   text-align: left !important;
   padding: 36px !important;
 }
-
-.auth-popup-tabs {
-  display: flex;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 4px;
-  gap: 4px;
-  margin-bottom: 24px;
-}
-
-.auth-popup-tab-btn {
-  flex: 1;
-  background: transparent;
-  border: none;
-  color: var(--text);
-  padding: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.auth-popup-tab-btn:hover {
-  color: var(--text-bright);
-}
-
-.auth-popup-tab-btn.active {
-  background: var(--primary-gradient);
-  color: #ffffff;
-  box-shadow: var(--shadow);
-}

@@ -49,31 +49,14 @@ class InterviewRequestTests(APITestCase):
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['recruiter_name'], 'Jane Doe')
 
-    def test_register_user_succeeds(self):
-        url = reverse('admin-register')
-        data = {
-            'username': 'newuser',
-            'password': 'newpassword123',
-            'email': 'newuser@example.com'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(User.objects.filter(username='newuser').exists())
-
     def test_delete_request_unauthenticated_fails(self):
         url = reverse('admin-interview-request-detail', kwargs={'pk': self.interview_request.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_delete_request_registered_user_succeeds(self):
-        # Register user
-        reg_url = reverse('admin-register')
-        reg_data = {'username': 'reguser', 'password': 'regpassword123'}
-        self.client.post(reg_url, reg_data, format='json')
-
-        # Try deleting request as registered user
+    def test_delete_request_authenticated_admin_succeeds(self):
         url = reverse('admin-interview-request-detail', kwargs={'pk': self.interview_request.pk})
-        self.client.login(username='reguser', password='regpassword123')
+        self.client.login(username='admin', password='password123')
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(InterviewRequest.objects.count(), 0)
