@@ -188,6 +188,10 @@ a {
   transform: scale(1.05);
 }
 
+.mobile-theme-toggle {
+  display: none;
+}
+
 /* Mobile Sidebar (Android Compatible Navigation Drawer) */
 .sidebar-overlay {
   position: fixed;
@@ -661,6 +665,9 @@ a {
   }
   .hamburger {
     display: block;
+  }
+  .mobile-theme-toggle {
+    display: inline-flex;
   }
   .about-grid, .contact-grid {
     grid-template-columns: 1fr;

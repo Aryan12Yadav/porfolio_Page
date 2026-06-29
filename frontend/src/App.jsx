@@ -324,7 +324,7 @@ function App() {
           </ul>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <button className="theme-toggle-btn hamburger" onClick={toggleTheme} aria-label="Toggle Theme" style={{ display: 'inline-flex' }}>
+            <button className="theme-toggle-btn mobile-theme-toggle" onClick={toggleTheme} aria-label="Toggle Theme">
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <button className="hamburger" onClick={toggleSidebar} aria-label="Toggle Menu">
