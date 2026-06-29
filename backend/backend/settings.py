@@ -103,16 +103,32 @@ if 'test' in sys.argv:
         }
     }
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DB_NAME') or os.getenv('POSTGRES_DB') or 'portfolio',
-            'USER': os.getenv('DB_USER') or os.getenv('POSTGRES_USER') or 'root',
-            'PASSWORD': os.getenv('DB_PASSWORD') or os.getenv('POSTGRES_PASSWORD') or 'root',
-            'HOST': os.getenv('DB_HOST') or os.getenv('POSTGRES_HOST') or '127.0.0.1',
-            'PORT': os.getenv('DB_PORT') or os.getenv('POSTGRES_PORT') or '5432',
+    db_url = os.getenv('DATABASE_URL')
+    if db_url:
+        import urllib.parse as urlparse
+        urlparse.uses_netloc.append("postgres")
+        url = urlparse.urlparse(db_url)
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': url.path[1:],
+                'USER': url.username,
+                'PASSWORD': url.password,
+                'HOST': url.hostname,
+                'PORT': url.port or 5432,
+            }
         }
-    }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': os.getenv('DB_NAME') or os.getenv('POSTGRES_DB') or 'portfolio',
+                'USER': os.getenv('DB_USER') or os.getenv('POSTGRES_USER') or 'root',
+                'PASSWORD': os.getenv('DB_PASSWORD') or os.getenv('POSTGRES_PASSWORD') or 'root',
+                'HOST': os.getenv('DB_HOST') or os.getenv('POSTGRES_HOST') or '127.0.0.1',
+                'PORT': os.getenv('DB_PORT') or os.getenv('POSTGRES_PORT') or '5432',
+            }
+        }
 
 
 
